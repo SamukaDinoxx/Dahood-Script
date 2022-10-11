@@ -1,0 +1,505 @@
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+local Window = OrionLib:MakeWindow({Name = "Dahood By Disfigured", HidePremium = true, IntroText = "DaHood By Disfigured", SaveConfig = false, ConfigFolder = "Retard"})
+
+
+----------------------------
+local HelloTab = Window:MakeTab({
+	Name = "Discord Invite",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+HelloTab:AddButton({
+	Name = "My Discord",
+	Callback = function()
+      		OrionLib:MakeNotification({
+	Name = "Hey!",
+	Content = "Discord Copied to your Clipboard:)",
+	Image = "rbxassetid://0",
+	Time = 5
+})
+setclipboard("discord.gg/wasupg")
+  	end    
+})
+-------------------------------
+local CombatStuffTab = Window:MakeTab({
+	Name = "AimStuff",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+CombatStuffTab:AddButton({
+	Name = "AimLock",
+	Callback = function()
+		getgenv().AimPart = "HumanoidRootPart"
+		getgenv().AimlockKey = "q"
+		getgenv().AimRadius = 30
+		getgenv().ThirdPerson = true
+		getgenv().FirstPerson = true
+		getgenv().TeamCheck = false
+		getgenv().PredictMovement = true
+		getgenv().PredictionVelocity = 6
+		local L_27_, L_28_, L_29_, L_30_ =
+				game:GetService "Players",
+				game:GetService "UserInputService",
+				game:GetService "RunService",
+				game:GetService "StarterGui"
+		local L_31_, L_32_, L_33_, L_34_, L_35_, L_36_, L_37_ =
+				L_27_.LocalPlayer,
+				L_27_.LocalPlayer:GetMouse(),
+				workspace.CurrentCamera,
+				CFrame.new,
+				Ray.new,
+				Vector3.new,
+				Vector2.new
+		local L_38_, L_39_, L_40_ = true, false, false
+		local L_41_
+		getgenv().CiazwareUniversalAimbotLoaded = true
+		getgenv().WorldToViewportPoint = function(L_42_arg0)
+			return L_33_:WorldToViewportPoint(L_42_arg0)
+		end
+		getgenv().WorldToScreenPoint = function(L_43_arg0)
+			return L_33_.WorldToScreenPoint(L_33_, L_43_arg0)
+		end
+		getgenv().GetObscuringObjects = function(L_44_arg0)
+			if L_44_arg0 and L_44_arg0:FindFirstChild(getgenv().AimPart) and L_31_ and L_31_.Character:FindFirstChild("Head") then
+				local L_45_ = workspace:FindPartOnRay(L_35_(L_44_arg0[getgenv().AimPart].Position, L_31_.Character.Head.Position))
+				if L_45_ then
+					return L_45_:IsDescendantOf(L_44_arg0)
+				end
+			end
+		end
+		getgenv().GetNearestTarget = function()
+			local L_46_ = {}
+			local L_47_ = {}
+			local L_48_ = {}
+			for L_50_forvar0, L_51_forvar1 in pairs(L_27_:GetPlayers()) do
+				if L_51_forvar1 ~= L_31_ then
+					table.insert(L_46_, L_51_forvar1)
+				end
+			end
+			for L_52_forvar0, L_53_forvar1 in pairs(L_46_) do
+				if L_53_forvar1.Character ~= nil then
+					local L_54_ = L_53_forvar1.Character:FindFirstChild("Head")
+					if getgenv().TeamCheck == true and L_53_forvar1.Team ~= L_31_.Team then
+						local L_55_ =
+								(L_53_forvar1.Character:FindFirstChild("Head").Position - game.Workspace.CurrentCamera.CFrame.p).magnitude
+						local L_56_ =
+								Ray.new(
+								game.Workspace.CurrentCamera.CFrame.p,
+								(L_32_.Hit.p - game.Workspace.CurrentCamera.CFrame.p).unit * L_55_
+							)
+						local L_57_, L_58_ = game.Workspace:FindPartOnRay(L_56_, game.Workspace)
+						local L_59_ = math.floor((L_58_ - L_54_.Position).magnitude)
+						L_47_[L_53_forvar1.Name .. L_52_forvar0] = {}
+						L_47_[L_53_forvar1.Name .. L_52_forvar0].dist = L_55_
+						L_47_[L_53_forvar1.Name .. L_52_forvar0].plr = L_53_forvar1
+						L_47_[L_53_forvar1.Name .. L_52_forvar0].diff = L_59_
+						table.insert(L_48_, L_59_)
+					elseif getgenv().TeamCheck == false and L_53_forvar1.Team == L_31_.Team then
+						local L_60_ =
+								(L_53_forvar1.Character:FindFirstChild("Head").Position - game.Workspace.CurrentCamera.CFrame.p).magnitude
+						local L_61_ =
+								Ray.new(
+								game.Workspace.CurrentCamera.CFrame.p,
+								(L_32_.Hit.p - game.Workspace.CurrentCamera.CFrame.p).unit * L_60_
+							)
+						local L_62_, L_63_ = game.Workspace:FindPartOnRay(L_61_, game.Workspace)
+						local L_64_ = math.floor((L_63_ - L_54_.Position).magnitude)
+						L_47_[L_53_forvar1.Name .. L_52_forvar0] = {}
+						L_47_[L_53_forvar1.Name .. L_52_forvar0].dist = L_60_
+						L_47_[L_53_forvar1.Name .. L_52_forvar0].plr = L_53_forvar1
+						L_47_[L_53_forvar1.Name .. L_52_forvar0].diff = L_64_
+						table.insert(L_48_, L_64_)
+					end
+				end
+			end
+			if unpack(L_48_) == nil then
+				return nil
+			end
+			local L_49_ = math.floor(math.min(unpack(L_48_)))
+			if L_49_ > getgenv().AimRadius then
+				return nil
+			end
+			for L_65_forvar0, L_66_forvar1 in pairs(L_47_) do
+				if L_66_forvar1.diff == L_49_ then
+					return L_66_forvar1.plr
+				end
+			end
+			return nil
+		end
+		L_32_.KeyDown:Connect(
+				function(L_67_arg0)
+			if L_67_arg0 == AimlockKey and L_41_ == nil then
+				pcall(
+							function()
+					if L_39_ ~= true then
+						L_39_ = true
+					end
+					local L_68_
+					L_68_ = GetNearestTarget()
+					if L_68_ ~= nil then
+						L_41_ = L_68_
+					end
+				end
+						)
+			elseif L_67_arg0 == AimlockKey and L_41_ ~= nil then
+				if L_41_ ~= nil then
+					L_41_ = nil
+				end
+				if L_39_ ~= false then
+					L_39_ = false
+				end
+			end
+		end
+			)
+		L_29_.RenderStepped:Connect(
+				function()
+			if getgenv().ThirdPerson == true and getgenv().FirstPerson == true then
+				if
+							(L_33_.Focus.p - L_33_.CoordinateFrame.p).Magnitude > 1 or
+								(L_33_.Focus.p - L_33_.CoordinateFrame.p).Magnitude <= 1
+						 then
+					L_40_ = true
+				else
+					L_40_ = false
+				end
+			elseif getgenv().ThirdPerson == true and getgenv().FirstPerson == false then
+				if (L_33_.Focus.p - L_33_.CoordinateFrame.p).Magnitude > 1 then
+					L_40_ = true
+				else
+					L_40_ = false
+				end
+			elseif getgenv().ThirdPerson == false and getgenv().FirstPerson == true then
+				if (L_33_.Focus.p - L_33_.CoordinateFrame.p).Magnitude <= 1 then
+					L_40_ = true
+				else
+					L_40_ = false
+				end
+			end
+			if L_38_ == true and L_39_ == true then
+				if L_41_ and L_41_.Character and L_41_.Character:FindFirstChild(getgenv().AimPart) then
+					if getgenv().FirstPerson == true then
+						if L_40_ == true then
+							if getgenv().PredictMovement == true then
+								L_33_.CFrame =
+											L_34_(
+											L_33_.CFrame.p,
+											L_41_.Character[getgenv().AimPart].Position +
+												L_41_.Character[getgenv().AimPart].Velocity / PredictionVelocity
+										)
+							elseif getgenv().PredictMovement == false then
+								L_33_.CFrame = L_34_(L_33_.CFrame.p, L_41_.Character[getgenv().AimPart].Position)
+							end
+						end
+					elseif getgenv().ThirdPerson == true then
+						if L_40_ == true then
+							if getgenv().PredictMovement == true then
+								L_33_.CFrame =
+											L_34_(
+											L_33_.CFrame.p,
+											L_41_.Character[getgenv().AimPart].Position +
+												L_41_.Character[getgenv().AimPart].Velocity / PredictionVelocity
+										)
+							elseif getgenv().PredictMovement == false then
+								L_33_.CFrame = L_34_(L_33_.CFrame.p, L_41_.Character[getgenv().AimPart].Position)
+							end
+						end
+					end
+				end
+			end
+		end
+			)
+		end 
+})
+
+
+CombatStuffTab:AddButton({
+	Name = "Fist Reach",
+	Callback = function()
+	loadstring(game:HttpGet("https://pastebin.com/raw/aZHK690D"))()
+  	end    
+})
+--------------------------------
+local VisualsTab = Window:MakeTab({
+	Name = "Visuals",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+VisualsTab:AddButton({
+	Name = "WIP",
+	Callback = function()
+	
+  	end    
+})
+-------------------------------
+local VisualsTab = Window:MakeTab({
+	Name = "Auto Farm",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+VisualsTab:AddButton({
+	Name = "WIP",
+	Callback = function()
+	
+  	end    
+})
+------------------------------
+local TPTab = Window:MakeTab({
+	Name = "TP",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+
+TPTab:AddButton({
+	Name = "Admin Base",
+	Callback = function()
+      		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-871, -32.6492119, -661, 1, 2.40087794e-09, 5.53485372e-13, -2.40087794e-09, 1, 5.4070699e-09, -5.53472415e-13, -5.4070699e-09, 1)
+  	end    
+})
+--
+TPTab:AddButton({
+	Name = "Bank",
+	Callback = function()
+      		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-375, 21, -349, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+  	end    
+})
+--
+TPTab:AddButton({
+	Name = "Casino",
+	Callback = function()
+      		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-904, 21, -150, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+  	end    
+})
+--
+TPTab:AddButton({
+	Name = "Nightclub / Club",
+	Callback = function()
+      		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-265, 23, -474, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+  	end    
+})
+--
+TPTab:AddButton({
+	Name = "Train Station",
+	Callback = function()
+      		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(598, 47, -114, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+  	end    
+})
+--
+TPTab:AddButton({
+	Name = "Playground",
+	Callback = function()
+      		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-262, 22, -761, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+  	end    
+})
+--
+TPTab:AddButton({
+	Name = "Sewers",
+	Callback = function()
+      		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(111, -39, -296, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+  	end    
+})
+--
+TPTab:AddButton({
+	Name = "Safe Zone 1",
+	Callback = function()
+      		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-117, -59, 146, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+  	end    
+})
+--
+TPTab:AddButton({
+	Name = "Safe Zone 2",
+	Callback = function()
+      		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(207, 38, 200014, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+  	end    
+})
+
+
+------------Misc----------
+local MiscTab = Window:MakeTab({
+	Name = "Misc",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+
+MiscTab:AddButton({
+	Name = "Animations",
+	Callback = function()
+	loadstring(game:HttpGet("https://pastebin.com/raw/7avRqgPq", true))()
+end
+})
+
+
+MiscTab:AddButton({
+	Name = "FOV CHANGER",
+	Callback = function()
+	game:GetService("RunService").RenderStepped:Connect(function()
+	game:GetService("Workspace").CurrentCamera.FieldOfView = 100
+	end)
+end
+})
+
+
+MiscTab:AddButton({
+	Name = "Fake Korblox",
+	Callback = function()
+        local ply = game.Players.LocalPlayer
+        local chr = ply.Character
+        chr.RightLowerLeg.MeshId = "902942093"
+        chr.RightLowerLeg.Transparency = "1"
+        chr.RightUpperLeg.MeshId = "http://www.roblox.com/asset/?id=902942096"
+        chr.RightUpperLeg.TextureID = "http://roblox.com/asset/?id=902843398"
+        chr.RightFoot.MeshId = "902942089"
+        chr.RightFoot.Transparency = "1" 
+  	end    
+})
+
+
+MiscTab:AddButton({
+	Name = "Fake HeadLess",
+	Callback = function()
+    game.Players.LocalPlayer.Character.Head.Size = Vector3.new(0,0, 0)
+    game.Players.LocalPlayer.Character.Head.Size = Vector3.new(0,0, 0)
+    game.Players.LocalPlayer.Character.Head.Massless = true
+    game.Players.LocalPlayer.Character.Head.Massless = true 
+  	end    
+})
+
+MiscTab:AddButton({
+	Name = "Zombie Animation",
+	Callback = function()
+	while true do
+		wait(1)
+		for i, player in ipairs(game.Players:GetChildren()) do
+		local Animate = game.Players.LocalPlayer.Character.Animate
+		Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=782841498"
+		Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=782841498"
+		Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616168032"
+		Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616163682"
+		Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=1083218792"
+		Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=1083439238"
+		Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=707829716"
+		game.Players.LocalPlayer.Character.Humanoid.Jump = false
+			end
+		end
+  	end    
+})
+
+MiscTab:AddButton({
+	Name = "NoClip",
+	Callback = function()
+		local noclipplayer = game:GetService("Players").LocalPlayer
+		local noclipmouse = noclipplayer:GetMouse()
+		 
+		local donoclip = false
+		local noclip = false
+		 
+		function b_noclip(key)
+		if (key == "b") then
+		if noclip == false then
+		donoclip = true
+		 
+		noclip = true
+		elseif noclip == true then
+		donoclip = false
+		 
+		noclip = false
+		end
+		end
+		end
+		 
+		noclipmouse.KeyDown:connect(b_noclip)
+		 
+		game:GetService("Players").LocalPlayer.Character.Head.Touched:connect(function(obj)
+		if obj ~= workspace.Terrain then
+		if donoclip == true then
+		obj.CanCollide = false
+		else
+		obj.CanCollide = true
+		end
+		end
+		end)
+		end
+})
+
+
+MiscTab:AddButton({
+	Name = "Fly (X)",
+	Callback = function()
+	loadstring(game:HttpGet("https://pastebin.com/raw/sUA9m6M6"))()
+	end    
+})
+--------------
+local GunTPTab = Window:MakeTab({
+	Name = "GunTP",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+GunTPTab:AddButton({
+	Name = "Tactical Shotgun",
+	Callback = function()
+	getgenv().game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(470.877533, 45.1272316, -620.630676, 0.999999821, 0.000604254019, -2.60802135e-08, -0.000604254019, 0.999999821, -8.63220048e-05, -2.60802135e-08, 8.63220048e-05, 1)
+  	end    
+})
+
+GunTPTab:AddButton({
+	Name = "Double Barrel",
+	Callback = function()
+	getgenv().game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-1039.59985, 18.8513641, -256.449951, -1, 0, 0, 0, 1, 0, 0, 0, -1)
+  	end    
+})
+
+GunTPTab:AddButton({
+	Name = "Revolver",
+	Callback = function()
+	getgenv().game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-638.75, 18.8500004, -118.175011, -1, 0, 0, 0, 1, 0, 0, 0, -1)
+  	end    
+})
+
+GunTPTab:AddButton({
+	Name = "Shotgun",
+	Callback = function()
+	getgenv().game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-578.623657, 5.47212696, -725.131531, 0, 0, 1, 0, 1, -0, -1, 0, 0)
+  	end    
+})
+
+GunTPTab:AddButton({
+	Name = "Smg",
+	Callback = function()
+	getgenv().game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-577.123413, 5.47666788, -718.031433, -1, 0, 0, 0, 1, 0, 0, 0, -1)
+  	end    
+})
+
+GunTPTab:AddButton({
+	Name = "RPG",
+	Callback = function()
+	getgenv().game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-794.814697, -42.5468521, -932.97998, 5.96046448e-08, 2.91038305e-11, 1, -0.000610388815, 0.999999821, 2.91038305e-11, -0.999999762, -0.000610388815, 5.96046448e-08)
+  	end    
+})
+
+GunTPTab:AddButton({
+	Name = "Armor",
+	Callback = function()
+	getgenv().game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-607.978455, 7.44964886, -788.494263, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07)
+  	end    
+})
+
+GunTPTab:AddButton({
+	Name = "PopCorn",
+	Callback = function()
+	getgenv().game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-995, 21.6998043, -153.100037, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+  	end    
+})
+
+-----------------------
+
+
+
+
+
+OrionLib:Init()
